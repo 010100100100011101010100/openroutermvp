@@ -7,5 +7,6 @@ class User(Document):
     creditbalance=FloatField(default=0.0)
     api_keys=ListField(StringField(),default=[])
     uid=StringField(required=True,unique=True)
+    joined_at=DateTimeField(default=datetime.datetime.now)
     class Meta:
-        collection="users"
+        collection="user"

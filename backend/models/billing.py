@@ -1,5 +1,7 @@
 from mongoengine import (Document,StringField,DateTimeField,IntField,FloatField,EmailField,ListField,BooleanField,ReferenceField,URLField,DictField)
 import datetime
+from models.user import User
+
 
 
 class Billing(Document):
