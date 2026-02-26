@@ -7,10 +7,10 @@ from mongoengine import connect
 import os
 from services.auth.auth import signup,login
 from pydantic import BaseModel,EmailStr as url
-from services.api import create_api_key, list_api_keys, delete_api_key
-from services.payment import create_payment,handle_webhook
-from services.generate import generate
-from services.admin import adminLogin,create_admin,addModelProvider,addModel
+from services.api.apicrud import create_api_key, get_api_keys, delete_api_key
+from services.payment.payment import create_payment,handle_webhook
+from services.generate.generate import generate
+from services.admin.admin import adminLogin,create_admin,addModelProvider,addModel
 
 app= FastAPI()
 
@@ -49,7 +49,7 @@ class GenerateRequest(BaseModel):
 class AdminRequest(BaseModel):
     email:url
     password:str
-    
+
 @app.post("/auth/register")
 async def register(payload:Annotated[SignupRequest,Body()]):
     return await signup(payload.email,payload.password)
@@ -60,7 +60,7 @@ async def login_user(payload:LoginRequest):
 
 @app.get("/api")
 async def get_api_keys(uid:APIKeyRequest.uid):
-    return await list_api_keys(uid)
+    return await get_api_keys(uid)
 
 @app.post("/api/create")
 async def create_key(payload:APIKeyRequest.uid):
