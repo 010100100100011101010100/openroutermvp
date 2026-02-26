@@ -9,7 +9,7 @@ client=DodoPayments(
     environment="test_mode"
 )
 
-async def create_payment(uid:str,amount:float,currency:str="USD")->str:
+async def create_payment(uid:str,amount:float,product_id:str="ai_credits")->str:
         user=User.objects(uid=uid).first()
         credits=int(amount)*100
         checkout_session=client.checkout_sessions.create(

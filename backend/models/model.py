@@ -23,6 +23,7 @@ class AIModel(Document):
     name=StringField(required=True)
     description=StringField()
     providers=ListField(StringField())
+    creators=ListField(StringField())
     token_price=FloatField(required=True)
     model_size=StringField(required=True)
     model_type=StringField(required=True,choices=[model_type.value for model_type in ModelType])

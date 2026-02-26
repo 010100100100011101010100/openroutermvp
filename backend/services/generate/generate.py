@@ -37,9 +37,12 @@ async def save_conversation_to_db(uid:str,API_key:str,providerId:str,conversatio
 async def generate(prompt:str,uid:str,model:str,temperature:float,max_tokens:int,modelprovider:str,modelproviderid:str,system_prompt:str="You are a helpful assistant",conversation_id:str="")->str:
     if modelprovider=="groq":
         response= await groq_completions_query(ai=model,prompt=prompt,temperature=temperature,max_tokens=max_tokens,system_prompt=system_prompt)
-        save_conversation_to_db(uid=uid,providerId=modelproviderid,conversation_id=conversation_id,)
+        save_conversation_to_db(uid=uid,providerId=modelproviderid,conversation_id=conversation_id,user_message=prompt,assistant_message=response)
+        return response
     elif modelprovider=="hugging":
         response= hugging_completions_query(ai=model,prompt=prompt,temperature=temperature,max_tokens=max_tokens,system_prompt=system_prompt)
+        save_conversation_to_db(uid=uid,providerId=modelproviderid,conversation_id=conversation_id,user_message=prompt,assistant_message=response)
+        return response
     else:
         return "Invalid model provider"
     
