@@ -10,14 +10,14 @@ def create_admin(email,password,superadminmail,superadminpassword)-> dict:
         return {"message":"Unauthorized"},401
     
 
-def adminLogin(email:str,password:str):
+async def adminLogin(email:str,password:str):
     admin=Admin.objects(email=email).first()
     if admin and admin.password==password:
         return {"message":"Admin login successful"}
     else:
         return {"message":"Invalid email or password"},401
 
-def addModelProvider(modelProviderID:str,modelID:str,providerName:str,providerURL:str,adminEmail:str,adminPassword:str):
+async def addModelProvider(modelProviderID:str,modelID:str,providerName:str,providerURL:str,adminEmail:str,adminPassword:str):
     admin=Admin.objects(email=adminEmail).first()
     if not admin or admin.password!=adminPassword:
         return {"message":"Unauthorized"},401
@@ -31,7 +31,7 @@ def addModelProvider(modelProviderID:str,modelID:str,providerName:str,providerUR
 
 
 
-def addModel(name:str,description:str,providers:list,creators:list,token_price:float,model_size:str,model_type:str,inputmodality:str,outputmodality:str,model_slug:str,adminEmail:str,adminPassword:str):
+async def addModel(name:str,description:str,providers:list,creators:list,token_price:float,model_size:str,model_type:str,inputmodality:str,outputmodality:str,model_slug:str,adminEmail:str,adminPassword:str):
     if(not Admin.objects(email=adminEmail).first() or Admin.objects(email=adminEmail).first().password!=adminPassword):
         return {"message":"Unauthorized"},401
     else:

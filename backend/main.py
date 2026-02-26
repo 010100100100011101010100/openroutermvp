@@ -10,7 +10,7 @@ from pydantic import BaseModel,EmailStr as url
 from services.api import create_api_key, list_api_keys, delete_api_key
 from services.payment import create_payment,handle_webhook
 from services.generate import generate
-from services.admin import 
+from services.admin import adminLogin,create_admin,addModelProvider,addModel
 
 app= FastAPI()
 
@@ -46,6 +46,10 @@ class GenerateRequest(BaseModel):
     conversation_id:str=""
 
 
+class AdminRequest(BaseModel):
+    email:url
+    password:str
+    
 @app.post("/auth/register")
 async def register(payload:Annotated[SignupRequest,Body()]):
     return await signup(payload.email,payload.password)
@@ -85,3 +89,24 @@ async def generate_reply(prompt:GenerateRequest.prompt,uid:GenerateRequest.uid,m
     response=await generate(prompt=prompt,uid=uid,model=model,temperature=temperature,max_tokens=max_tokens,modelprovider=modelprovider,modelproviderid=modelproviderid,system_prompt=system_prompt,conversation_id=conversation_id)
     return {"response":response}
 
+
+@app.post("/admin/addModel")
+async def add_model(name:str,description:str,providers:list,creators:list,token_price:float,model_size:str,model_type:str,inputmodality:str,outputmodality:str,model_slug:str,adminEmail:AdminRequest.email,adminPassword:AdminRequest.password):
+    add_model_response=await addModel(name=name,description=description,providers=providers,creators=creators,token_price=token_price,model_size=model_size,model_type=model_type,inputmodality=inputmodality,outputmodality=outputmodality,model_slug=model_slug,adminEmail=adminEmail,adminPassword=adminPassword)
+    return add_model_response
+
+@app.post("/admin/createAdmin")
+async def create_admin(superadmin_email:AdminRequest.email,superadmin_password:AdminRequest.password,new_admin_email:AdminRequest.email,new_admin_password:AdminRequest.password):
+    admin_creation_response=await create_admin(superadmin_email,superadmin_password,new_admin_email,new_admin_password)
+    return admin_creation_response
+    
+
+@app.post("/admin/login")
+async def admin_login(email:AdminRequest.email,password:AdminRequest.password):
+    admin_login_response=await adminLogin(email,password)
+    return admin_login_response
+
+@app.post("/admin/addModelProvider")
+async def add_model_provider(modelProviderID:str,modelID:str,providerName:str,providerURL:str,adminEmail:AdminRequest.email,adminPassword:AdminRequest.password):
+    response=await addModelProvider(modelProviderID=modelProviderID,modelID=modelID,providerName=providerName,providerURL=providerURL,adminEmail=adminEmail,adminPassword=adminPassword)
+    return response
